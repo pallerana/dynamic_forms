@@ -1,0 +1,100 @@
+entity Address {
+	street String,	
+	city String,
+	state String,
+    zip String,
+}
+
+entity Person {
+	firstName String,
+	lastName String,
+	email String,
+	phoneNumber String,
+	address Address
+}
+
+entity Employee {
+	salary Double,
+    person Person
+}
+
+entity Guest {
+	person Person,
+    reservations Reservation
+}
+
+entity Hotel {
+	address Address,
+    hotelCategory HotelCategory,
+    rooms Room
+}
+
+entity Room {
+	beds Integer,
+    roomType RoomType,
+    hotel Hotel,
+    price Double,
+    isAvailable Boolean,
+    reservation Reservation
+}
+
+entity Reservation {
+	room Room,
+    guest Guest,
+    reservationStatus ReservationStatus
+}
+
+enum ReservationStatus {
+    HOLD, PAID, DECLINED
+}
+
+enum RoomType {
+    SINGLE, DOUBLE, QUEEN, KING, SUITE, PENTHOUSE
+}
+
+enum HotelCategory {
+    BUDGET, MIDSCALE, UPSCALE, LUXUARY
+}
+relationship OneToOne {
+	Employee to Person,
+    Guest to Person,
+    Person to Address,
+    Hotel to Address,
+    Reservation{guest} to Guest,
+    Room{reservation} to Reservation
+}
+
+
+/** 
+ *relationship ManyToMany {
+*	Job{task(title)} to Task{job}
+*}
+*/
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+	Hotel to Room{hotel},
+	/**
+	* A relationship
+	*/
+    //Reservation to Room,
+	Guest to Reservation
+}
+
+relationship ManyToOne {
+	Room{hotel} to Hotel
+}
+
+
+
+// Set pagination options
+paginate Employee with infinite-scroll
+paginate with pagination
+
+// Use Data Transfert Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl except Employee
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
